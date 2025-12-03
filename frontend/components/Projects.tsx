@@ -66,7 +66,10 @@ const Projects: React.FC = () => {
         return saved === 'list' || saved === 'cards' ? saved : 'cards';
     });
     const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false);
-    const [orderBy, setOrderBy] = useState<string>('created_at:desc');
+    const [orderBy, setOrderBy] = useState<string>(() => {
+        const saved = localStorage.getItem('projectsSortOrder');
+        return saved || 'created_at:desc';
+    });
 
     const [searchParams, setSearchParams] = useSearchParams();
     const stateFilter = searchParams.get('state') || 'all';
@@ -133,6 +136,10 @@ const Projects: React.FC = () => {
     useEffect(() => {
         localStorage.setItem('projectsViewMode', viewMode);
     }, [viewMode]);
+
+    useEffect(() => {
+        localStorage.setItem('projectsSortOrder', orderBy);
+    }, [orderBy]);
 
     // Projects are now loaded by Layout component into global store
 
