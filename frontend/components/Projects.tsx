@@ -146,6 +146,10 @@ const Projects: React.FC = () => {
         localStorage.setItem('projectsViewMode', viewMode);
     }, [viewMode]);
 
+    useEffect(() => {
+        localStorage.setItem('projectsSortOrder', orderBy);
+    }, [orderBy]);
+
     // Projects are now loaded by Layout component into global store
 
     // Modal state tracking removed after fixing the issue
