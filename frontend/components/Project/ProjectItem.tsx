@@ -12,6 +12,7 @@ import {
     XCircleIcon,
     ShareIcon,
     ExclamationTriangleIcon,
+    Squares2X2Icon,
 } from '@heroicons/react/24/outline';
 import { Project, ProjectStatus } from '../../entities/Project';
 import { useTranslation } from 'react-i18next';
@@ -596,8 +597,14 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
 
             {viewMode === 'list' && (
                 <div className="flex justify-between items-center flex-1">
-                    <div className="flex items-center min-w-0">
+                    <div className="flex flex-col min-w-0">
                         {listTitleLink}
+                        {(project as any).Area && (
+                            <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                <Squares2X2Icon className="h-3 w-3 mr-1" />
+                                <span className="truncate">{(project as any).Area.name}</span>
+                            </div>
+                        )}
                     </div>
                     <div className="relative dropdown-container">
                         <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
