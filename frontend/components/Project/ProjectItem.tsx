@@ -598,7 +598,16 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
             {viewMode === 'list' && (
                 <div className="flex justify-between items-center flex-1">
                     <div className="flex flex-col min-w-0">
-                        {listTitleLink}
+                        <div className="flex items-center gap-2">
+                            {listTitleLink}
+                            {(() => {
+                                const taskStatus = (project as any).task_status;
+                                const openCount = taskStatus ? taskStatus.total - taskStatus.done : 0;
+                                return openCount > 0 ? (
+                                    <span className="text-xs text-gray-500 dark:text-gray-400">{openCount}</span>
+                                ) : null;
+                            })()}
+                        </div>
                         {(project as any).Area && (
                             <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                                 <Squares2X2Icon className="h-3 w-3 mr-1" />
