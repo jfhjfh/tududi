@@ -53,7 +53,18 @@ const Tasks: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
     const [orderBy, setOrderBy] = useState<string>('created_at:desc');
-    const [taskSearchQuery, setTaskSearchQuery] = useState<string>('');
+    const taskSearchQuery = useStore(
+        (state: any) => state.tasksStore.taskSearchQuery
+    );
+    const setTaskSearchQuery = useStore(
+        (state: any) => state.tasksStore.setTaskSearchQuery
+    );
+    const showAllTasks = useStore(
+        (state: any) => state.tasksStore.showAllTasks
+    );
+    const setShowAllTasks = useStore(
+        (state: any) => state.tasksStore.setShowAllTasks
+    );
     const [isInfoExpanded, setIsInfoExpanded] = useState(false);
     const [isSearchExpanded, setIsSearchExpanded] = useState(false);
     const [showCompleted, setShowCompleted] = useState(false);
@@ -291,6 +302,7 @@ const Tasks: React.FC = () => {
         if (isLoadingMore) return;
         if (!hasMore && !all) return;
         setIsLoadingMore(true);
+        if (all) setShowAllTasks(true);
         const shouldDisablePagination =
             !isUpcomingView && groupBy === 'project';
         if (all || shouldDisablePagination) {
@@ -312,7 +324,8 @@ const Tasks: React.FC = () => {
     };
 
     useEffect(() => {
-        const shouldDisablePagination = isUpcomingView || groupBy === 'project';
+        const shouldDisablePagination =
+            isUpcomingView || groupBy === 'project' || showAllTasks;
         fetchData(
             true,
             shouldDisablePagination
@@ -324,6 +337,7 @@ const Tasks: React.FC = () => {
                   }
                 : undefined
         );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location, isMobile, groupBy, isUpcomingView]);
 
     useEffect(() => {
@@ -1063,7 +1077,7 @@ const Tasks: React.FC = () => {
                                             'tasks.showingItems',
                                             'Showing {{current}} of {{total}} tasks',
                                             {
-                                                current: tasks.length,
+                                                current: displayTasks.length,
                                                 total: totalCount,
                                             }
                                         )}

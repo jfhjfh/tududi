@@ -57,6 +57,10 @@ interface TasksStore {
     tasks: Task[];
     isLoading: boolean;
     isError: boolean;
+    taskSearchQuery: string;
+    setTaskSearchQuery: (q: string) => void;
+    showAllTasks: boolean;
+    setShowAllTasks: (v: boolean) => void;
     setTasks: (tasks: Task[]) => void;
     setLoading: (isLoading: boolean) => void;
     setError: (isError: boolean) => void;
@@ -342,6 +346,16 @@ export const useStore = create<StoreState>((set: any) => ({
         tasks: [],
         isLoading: false,
         isError: false,
+        taskSearchQuery: '',
+        setTaskSearchQuery: (taskSearchQuery) =>
+            set((state) => ({
+                tasksStore: { ...state.tasksStore, taskSearchQuery },
+            })),
+        showAllTasks: false,
+        setShowAllTasks: (showAllTasks) =>
+            set((state) => ({
+                tasksStore: { ...state.tasksStore, showAllTasks },
+            })),
         setTasks: (tasks) =>
             set((state) => ({ tasksStore: { ...state.tasksStore, tasks } })),
         setLoading: (isLoading) =>
