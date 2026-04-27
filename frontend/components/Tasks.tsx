@@ -21,6 +21,10 @@ import {
 } from '@heroicons/react/24/outline';
 import { getApiPath } from '../config/paths';
 import { getCsrfToken } from '../utils/csrfService';
+import {
+    parseSearchQuery,
+    matchesPriorityFilter,
+} from '../utils/searchQueryUtils';
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -107,13 +111,22 @@ const Tasks: React.FC = () => {
         }
 
         if (taskSearchQuery.trim() && !isUpcomingView) {
-            const queryLower = taskSearchQuery.toLowerCase();
-            filteredTasks = filteredTasks.filter(
-                (task: Task) =>
+            const { freeText, filters } = parseSearchQuery(taskSearchQuery);
+            const queryLower = freeText.toLowerCase();
+            filteredTasks = filteredTasks.filter((task: Task) => {
+                if (
+                    filters.priority &&
+                    !matchesPriorityFilter(task.priority, filters.priority)
+                ) {
+                    return false;
+                }
+                if (!queryLower) return true;
+                return (
                     task.name.toLowerCase().includes(queryLower) ||
                     task.original_name?.toLowerCase().includes(queryLower) ||
                     task.note?.toLowerCase().includes(queryLower)
-            );
+                );
+            });
         }
 
         return filteredTasks;

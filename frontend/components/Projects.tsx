@@ -24,6 +24,10 @@ import { useSearchParams } from 'react-router-dom';
 import ProjectItem from './Project/ProjectItem';
 import ProjectShareModal from './Project/ProjectShareModal';
 import { useToast } from './Shared/ToastContext';
+import {
+    parseSearchQuery,
+    matchesPriorityFilter,
+} from '../utils/searchQueryUtils';
 
 const Projects: React.FC = () => {
     const { t } = useTranslation();
@@ -316,16 +320,22 @@ const Projects: React.FC = () => {
 
         // Apply search filter
         if (searchQuery.trim()) {
-            filteredProjects = filteredProjects.filter(
-                (project) =>
-                    project.name
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
+            const { freeText, filters } = parseSearchQuery(searchQuery);
+            const queryLower = freeText.toLowerCase();
+            filteredProjects = filteredProjects.filter((project) => {
+                if (
+                    filters.priority &&
+                    !matchesPriorityFilter(project.priority, filters.priority)
+                ) {
+                    return false;
+                }
+                if (!queryLower) return true;
+                return (
+                    project.name.toLowerCase().includes(queryLower) ||
                     (project.description &&
-                        project.description
-                            .toLowerCase()
-                            .includes(searchQuery.toLowerCase()))
-            );
+                        project.description.toLowerCase().includes(queryLower))
+                );
+            });
         }
 
         // Apply sorting
